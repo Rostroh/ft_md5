@@ -29,7 +29,6 @@ static int		pars_flags(t_data *info, char c)
 {
 	int			offset;
 	int			*addr;
-	const int	flg_offset[NB_FLG] = {0, 4, 8, 12};
 
 	if ((offset = check_flags(c)) == -1)
 	{
@@ -41,31 +40,31 @@ static int		pars_flags(t_data *info, char c)
 	return (0);
 }
 
-static int		get_flags(t_data *info)
+int		get_flags(t_data *info, int pam_idx)
 {
-	int			j;
+	int			i;
+	int			flg_idx;
 
-	for (int i = 2; i < info->nb_param; i++)
+	i = 1;
+	if (ft_strlen(info->param[pam_idx]) == 2 && ft_strncmp(info->param[pam_idx], "--", 2) == 0)
+		return (FLG_STOP);
+	info->flgs.str = 0;
+	if (info->param[pam_idx][0] == '-')
 	{
-		if (ft_strlen(info->param[i]) == 2 && ft_strncmp(info->param[i], "--", 2) == 0)
-			break ;
-		if (info->param[i][0] == '-')
-		{
-			j = 1;
-			while (info->param[i][j])
+		while (info->param[pam_idx][i])
+		{	
+			if ((flg_idx = pars_flags(info, info->param[pam_idx][i])) == -1)
+				return (FLG_ERR);
+			i++;
+			if (info->flgs.str == 1 && i < ft_strlen(info->param[pam_idx]))	//if string flag
 			{
-				if (pars_flags(info, info->param[i][j]) == -1)
-					return (-1);
-				j++;
+				info->str = info->param[pam_idx] + i;
+				return (FLG_STR);
 			}
 		}
-		else
-		{
-			info->offset = i;
-			return (0);
-		}
+		return (FLG_DONE);
 	}
-	return (0);
+	return (FLG_NONE);
 }
 
 static void		print_data(t_data info)
@@ -78,6 +77,7 @@ static void		print_data(t_data info)
 int				main(int argc, char **argv)
 {
 	t_data		info;
+	static int		(*command[NB_CMD])(t_data info) = {&ft_md5};
 
 	ft_bzero(&info, sizeof(info));
 	info.offset = 2;
@@ -88,8 +88,9 @@ int				main(int argc, char **argv)
 		return (error_usage(argv[0]));
 	if ((info.cmd_id = get_command_id(argv[1])) < 0)
 		return (error_command(argv[0], argv[1]));
-	if (get_flags(&info) == -1)
+	command[info.cmd_id](info);
+	/*if (get_flags(&info) == -1)
 		return (error_flag(argv[0], info.flgs.err));
-	print_data(info);
+	print_data(info);*/
 	return (0);
 }

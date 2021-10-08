@@ -7,6 +7,13 @@
 # define NB_FLG 4
 # define NB_CMD 1
 
+# define FLG_ERR -1
+# define FLG_NONE 0
+# define FLG_STOP 1
+# define FLG_STR 2
+# define FLG_DONE 3
+# define FLG_INIT -256
+
 typedef struct	s_flg
 {
 	int			std;
@@ -27,9 +34,24 @@ typedef struct	s_data
 }				t_data;
 
 /*
- * errors_input.c
+ *	errors_input.c
 */
 int		error_usage(char *prog_name);
 int		error_command(char *prog_name, char *wrong_cmd);
 int		error_flag(char *prog_name, char wrong_flg);
+
+/*
+ *	flags.c
+*/
+int		get_flags(t_data *info, int pam_idx);
+/*
+ *	ft_md5.c
+*/
+int		ft_md5(t_data info);
+
+/*
+ *	dispencer.c
+*/
+void	dispencer(t_data info);
+
 #endif

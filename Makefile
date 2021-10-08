@@ -1,6 +1,6 @@
 NAME = ./ft_ssl
 
-SRC = main.c errors_input.c
+SRC = main.c errors_input.c ft_md5.c
 
 OBJ = $(SRC:.c=.o)
 
