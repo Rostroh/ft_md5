@@ -33,3 +33,24 @@ int				error_flag(char *prog_name, char wrong_flg)
 	display();
 	return (0);
 }
+
+int				error_string(char *algo)
+{
+	const char	flags_tab[NB_FLG] = {'p', 'q', 'r', 's'};
+	
+	ft_printf("%s: option requires an argument -- s\n", algo);
+	ft_printf("usage: %s [-", algo);
+	for (int i = 0; i < NB_FLG - 1; i++)
+		ft_putchar(flags_tab[i]);
+	ft_putstr("] [-s string] [files ...]\n");
+	return (-1);
+}
+
+int				error_open(char *algo, char *name, int err)
+{
+	if (err == -1)
+		printf("%s: %s: No such or directory\n", algo, name);
+	else
+		printf("err = %d\n", err);
+	return (-1);
+}

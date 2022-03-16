@@ -1,0 +1,133 @@
+#!/bin/bash
+#test=$(ls test)
+
+cmd="./ft_ssl "$1
+err=0
+if [ $1 == "md5" ]
+then
+	dflt="md5 "
+elif [ $1 == "sha256" ]
+then
+	dflt="shasum -a 256"
+else
+	echo "no algo"
+	exit 1
+fi
+
+diff="./diff"
+
+echo $cmd
+
+echo ""
+echo "RUNNING BASIC TEST"
+for unit in test/*
+do
+	$cmd $unit > t1
+	$dflt $unit > t2
+	diff t1 t2 > diff
+#	cat diff
+	if [ -s diff ]
+	then
+		echo $unit" is prouted"
+		cat diff
+		((err = err + 1))
+	else
+		echo $unit" is ok"
+	fi
+done
+
+basic_opt=(" -r " " -q " " -rq ")
+
+echo ""
+echo "RUNNING BASIC OPT"
+for unit in test/*
+do
+	echo "Testing opt on "$unit
+	for i in ${!basic_opt[@]}
+	do
+		$cmd ${basic_opt[i]} $unit > t1
+		$dflt ${basic_opt[i]} $unit > t2
+		diff t1 t2 > diff
+		if [ -s diff ]
+		then
+			echo $unit ${basic_opt[i]}" is prouted"
+			cat diff
+			((err = err + 1))
+		else
+			echo $unit ${basic_opt[i]}" is ok"
+		#echo $cmd ${basic_opt[i]} $unit
+		fi
+	done
+	echo ""
+done
+
+test_42=("echo \"42 is nice\"" "echo \"Pity the living\"")
+echo ""
+echo "RUNNING TEST 42"
+${test_42[0]} | $cmd > t1
+${test_42[0]} | $dflt > t2
+diff t1 t2 > diff
+if [ -s diff ]
+then
+	echo ${test_42[0]}" is prouted"
+	cat diff
+	((err = err + 1))
+else
+	echo ${test_42[0]}" is ok"
+fi
+
+${test_42[1]} | $cmd -q -r > t1
+${test_42[1]} | $dflt -q -r > t2
+diff t1 t2 > diff
+if [ -s diff ]
+then
+	echo ${test_42[1]}" is prouted"
+	cat diff
+	((err = err + 1))
+else
+	echo ${test_42[1]}" is ok"
+fi
+
+string_opt=("-s \"42 is nice\"" "-sPrayTheWhippet")
+
+echo ""
+echo "RUNNING STRING OPT"
+for i in ${!string_opt[@]}
+do
+	$cmd ${string_opt[i]} > t1
+	$dflt ${string_opt[i]} > t2
+	echo $dflt ${string_opt[i]}
+	diff t1 t2 > diff
+	if [ -s diff ]
+	then
+		echo $cmd ${string_opt[i]}" is prouted"
+		cat diff
+		((err += 1))
+	else
+		echo $cmd ${string_opt[i]}" is ok"
+	fi
+done
+
+mixed_opt=("-qsHonse" "-q -s \"Praise To Be Him\"" "-qsrs")
+
+echo ""
+echo "RUNNING MIXED TEST"
+for i in ${!mixed_opt[@]}
+do
+	$cmd ${mixed_opt[i]} > t1
+	$dflt ${mixed_opt[i]} > t2
+	diff t1 t2 > diff
+	if [ -s diff ]
+	then
+		echo $cmd ${mixed_opt[i]}" is prouted"
+		cat diff
+		((err += 1))
+	else
+		echo $cmd ${mixed_opt[i]}" is ok"
+	fi
+	echo ${mixed_opt[i]}
+done
+
+
+echo ""
+echo "FINISHED WITH "$err" ERROR(S)"

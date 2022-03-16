@@ -1,6 +1,6 @@
 NAME = ./ft_ssl
 
-SRC = main.c errors_input.c ft_md5.c
+SRC = main.c block_parser.c errors_input.c flags.c ft_md5.c ft_sha256.c dispencer.c md5_func.c output.c reader.c
 
 OBJ = $(SRC:.c=.o)
 
