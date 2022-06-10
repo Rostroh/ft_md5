@@ -9,6 +9,9 @@
 
 # define VERBOSE 0
 
+# define MD5 0
+# define SHA256 1
+
 # define NB_FLG 4
 # define NB_CMD 2
 
@@ -34,16 +37,19 @@
 # define C 2
 # define D 3
 
-//# define VEC_A 0x01234567
-//# define VEC_B 0x89ABCDEF
-//# define VEC_C 0xFEDCBA98
-//# define VEC_D 0x76543210
+# define E 4
+# define F 5
+# define G 6
+# define H 7
 
+//MD5 VECTORS
 # define VEC_A 0x67452301
 # define VEC_B 0xefcdab89
 # define VEC_C 0x98badcfe
 # define VEC_D 0x10325476
 
+
+//SHA256 VECTORS
 # define SHA_H0 0x6a09e667
 # define SHA_H1 0xbb67ae85
 # define SHA_H2 0x3c6ef372
@@ -69,6 +75,23 @@ typedef struct	s_sha256
 	uint32_t	vector[8];
 	uint32_t	m[64];
 }				t_sha256;
+
+# define MD5_MLEN 16
+# define SHA_MLEN 64
+
+# define MD5_VECN 4
+# define SHA_VECN 8
+
+typedef struct	s_hash
+{
+	//usage for MD5 only
+	uint32_t	f;
+	uint32_t	g;
+	uint32_t	fingprint[4];
+	//------------------
+	uint32_t	m[SHA_MLEN];
+	uint32_t	vector[SHA_VECN];
+}				t_hash;
 
 typedef struct	s_flg
 {
@@ -101,7 +124,8 @@ typedef struct		s_data
 /*
  *	block_parser.c
 */
-int			block_parser(t_data *info, int command(t_data *info));
+int			block_parser(t_data info);
+void		print_byte(unsigned char c);
 
 /*
  *	errors_input.c
@@ -120,19 +144,21 @@ int			get_flags(t_data *info, int pam_idx);
 /*
  *	ft_md5.c
 */
-int			setup_message(t_data *info, unsigned char *buf, int len);
-void		fingerprint_output(uint32_t *fingprint);
-int			ft_md5(t_data *info);
+void		md5(unsigned char *buf, t_data info, t_hash *var);
+//int			setup_message(t_data *info, unsigned char *buf, int len);
+//void		fingerprint_output(uint32_t *fingprint);
+//int			ft_md5(t_data info);
 
 /*
  *	ft_sha256.c
 */
-int			ft_sha256(t_data *info);
+void		sha256(unsigned char *buf, t_data info, t_hash *var);
+//int			ft_sha256(t_data info);
 
 /*
  *	dispencer.c
 */
-int			dispencer(t_data info, int command(t_data *info));
+int			dispencer(t_data info);
 
 /*
  *	main.c
@@ -142,17 +168,23 @@ void		print_data(t_data info);
 /*
  *	md5_func.c
 */
-void			round1(t_md5 *var, int i);
-void			round2(t_md5 *var, int i);
-void			round3(t_md5 *var, int i);
-void			round4(t_md5 *var, int i);
+void			round1(t_hash *var, int i);
+void			round2(t_hash *var, int i);
+void			round3(t_hash *var, int i);
+void			round4(t_hash *var, int i);
 /*
  *	output.c
 */
-void		output(t_data info);
+void		output(t_data info, t_hash var);
 
 /*
  *	reader.c
 */
 int			reader(t_data info, unsigned char *buffer, int file_offset);
+
+/*
+ *	utilities.c
+*/
+uint32_t	left_rot(uint32_t byte, int n);
+uint32_t	right_rot(uint32_t byte, int n);
 #endif

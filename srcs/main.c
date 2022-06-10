@@ -24,7 +24,6 @@ void			print_data(t_data info)
 int				main(int argc, char **argv)
 {
 	t_data		info;
-	static int		(*command[NB_CMD])(t_data *info) = {&ft_md5, &ft_sha256};
 
 	ft_bzero(&info, sizeof(info));
 	info.fd = 0;
@@ -38,12 +37,6 @@ int				main(int argc, char **argv)
 		return (error_usage(argv[0]));
 	if ((info.cmd_id = get_command_id(argv[1])) < 0)
 		return (error_command(argv[0], argv[1]));
-	//if (get_flags(&info, 2) == FLG_ERR)
-	//	return (error_flag(argv[0], info.flgs.err));
-	if (VERBOSE)
-		print_data(info);
-//	printf("En vie %d\n", info.flgs);
-	dispencer(info, command[info.cmd_id]);
-	//command[info.cmd_id](info);
+	dispencer(info);
 	return (0);
 }

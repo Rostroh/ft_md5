@@ -1,7 +1,0 @@
-#!/bin/bash
-
-cmd="./ft_ssl md5 "
-str="-s \"Hello you\""
-
-$cmd $str
-md5 $str

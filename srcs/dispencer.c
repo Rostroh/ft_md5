@@ -29,13 +29,14 @@ void		iteration(t_data info, int command(t_data info))
 	}
 }*/
 
-int			dispencer(t_data info, int command(t_data *info))
+int			dispencer(t_data info)
 {
 	int		stop;
 	uint32_t	*finger_print;
 
 	if (info.offset == info.nb_param)
-		command(&info);
+		block_parser(info);
+		//command(info);
 	for (int i = info.offset; i < info.nb_param; i++)
 	{
 		stop = FLG_INIT;
@@ -51,13 +52,15 @@ int			dispencer(t_data info, int command(t_data *info))
 					return (error_flag(info.param[0], info.flg_err));
 				case FLG_STR:
 				//	printf("flg str %s\n", info.str);
-					command(&info);
+					block_parser(info);
+					//command(info);
 					break ;
 				case FLG_ONGO:
 		//			printf("flg done\n");
 					if ((info.flgs & MASK_P) != 0)
 					{
-						command(&info);
+						block_parser(info);
+						//command(info);
 						info.flgs ^= MASK_P;
 					}
 					if ((info.flgs & MASK_S) != 0)
@@ -66,7 +69,8 @@ int			dispencer(t_data info, int command(t_data *info))
 						if ((i += get_next_arg(&info, i)) == -1)
 							return (-1);
 				//	printf("fl str %s i = %d\n", info.str, i);
-						command(&info);
+						//command(info);
+						block_parser(info);
 					}
 					break ;/*
 				case FLG_NONE:
@@ -82,7 +86,8 @@ int			dispencer(t_data info, int command(t_data *info))
 					{
 						//printf("default %d\n", stop);
 						//i += get_next_arg(&info, i);
-						command(&info);
+						block_parser(info);
+						//command(info);
 					}
 					break ; 
 			}

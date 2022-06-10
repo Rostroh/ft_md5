@@ -1,6 +1,6 @@
 NAME = ./ft_ssl
 
-SRC = main.c block_parser.c errors_input.c flags.c ft_md5.c ft_sha256.c dispencer.c md5_func.c output.c reader.c
+SRC = main.c block_parser.c errors_input.c flags.c ft_md5.c ft_sha256.c dispencer.c md5_func.c output.c reader.c utilities.c
 
 OBJ = $(SRC:.c=.o)
 
@@ -19,7 +19,7 @@ LIB_DIR = ./libft
 LFT = $(LIB_DIR)/$(LIBFT)
 LIB = -L $(LIB_DIR) -l$(LIBFT:lib%.a=%)
 
-OBJ_PATH = $(addprefix $(OBJ_DIR)/,$(SRC":.c=.o))
+#OBJ_PATH = $(addprefix $(OBJ_DIR)/,$(SRC":.c=.o))
 
 FLG = #-Wall -Werror -Wextra
 
@@ -36,6 +36,8 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 $(OBJS): $(HEAD)
 
 $(NAME): $(OBJS)
+	echo $(OBJS)
+	echo $(OBJ_PATH)
 	$(CC) $(FLG) $(OBJS) -o $@ $(LIB)
 
 clean:
